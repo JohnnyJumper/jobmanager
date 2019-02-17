@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import {XYPlot, HorizontalGridLines, VerticalGridLines, XAxis, YAxis, LineMarkSeries} from 'react-vis';
+import {XYPlot, HorizontalGridLines, VerticalGridLines, XAxis, YAxis, LineMarkSeries, VerticalBarSeries} from 'react-vis';
 import axios from 'axios';
 
 
@@ -29,6 +29,11 @@ export default class StatPage extends Component {
 				colorType="literal"
 				color={this.chooseColor(props.status)}
 				data={props.data}/>
+				<VerticalBarSeries
+				barWidth={0.1}
+				colorType="literal"
+				color={this.chooseColor(props.status)}
+				data={props.data}/>	
 			</XYPlot>	
 		)
 	}
@@ -69,7 +74,7 @@ export default class StatPage extends Component {
 
 	renderGraph() {
 		const {graphData} = this.state;
-		const statuses = ['noresponse', 'responded', 'interview', 'rejected'];
+		const statuses = ['responded', 'noresponse' , 'interview', 'rejected'];
 		statuses.forEach(status => {
 			graphData[status] = this.getGraphData(status)
 		});
