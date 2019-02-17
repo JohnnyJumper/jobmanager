@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import {XYPlot, HorizontalGridLines, VerticalGridLines, XAxis, YAxis, LineMarkSeries, VerticalBarSeries} from 'react-vis';
+import {XYPlot, HorizontalGridLines, VerticalGridLines, XAxis, YAxis, LineMarkSeries, VerticalBarSeries, AreaSeries} from 'react-vis';
 import axios from 'axios';
 
 
@@ -29,8 +29,9 @@ export default class StatPage extends Component {
 				colorType="literal"
 				color={this.chooseColor(props.status)}
 				data={props.data}/>
-				<VerticalBarSeries
-				barWidth={0.1}
+				<AreaSeries
+				// barWidth={0.1}
+				curve={'curveMonotoneX'}
 				colorType="literal"
 				color={this.chooseColor(props.status)}
 				data={props.data}/>	

@@ -35,10 +35,15 @@ router.post('/update/:id', (req, res) => {
 	const {id} = req.params;
 	const {update} = req.body;
 
+	console.log(update);
+
 	job.findOne({_id: id}, (err, doc) => {
 		if (err) return res.json({success: false, err});
 		doc.status = update.status;
-		doc.date[update.status] = new Date();
+		if (Object.prototype.hasOwnProperty.call(update, 'date')) 
+			doc.date[update.status] = update.date;
+		else
+			doc.date[update.status] = new Date();
 		doc.save( err => {
 			if (err) return res.json({success: false, err});
 			return res.json({success: true});

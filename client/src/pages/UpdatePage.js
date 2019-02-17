@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Button, FormGroup, Label, Input} from 'reactstrap';
+import {Button, FormGroup, Label, Input, Col} from 'reactstrap';
 import axios from 'axios';
 
 
@@ -10,10 +10,14 @@ export default class UpdatePage extends Component {
 		super();
 		this.state = {
 			entries: {},
-			selected: ''
+			selected: '',
+			showDate: false,
+			date: undefined
 		}
 
 		this.handleChange = this.handleChange.bind(this);
+		this.handleDate = this.handleDate.bind(this);
+		this.handleDateChange = this.handleDateChange.bind(this);
 
 		this.UpdateEntry = ({name, link, status, _id: id}) => (
 			<div className="update-entry vertical">
@@ -28,10 +32,16 @@ export default class UpdatePage extends Component {
 						<option>rejected</option>
 					</Input>
 				</FormGroup>
-
-
-				<Button onClick={() => this.update(id)} block color="info">Update</Button>
-				<Button onClick={() => this.deleteEntry(id)} block color="danger">Delete</Button>
+				<FormGroup>
+							<Label className="update-status-text">Not Today</Label>
+					<Col>
+							<Input type="checkbox" name="showDate" value={this.state.showDate} onChange={this.handleDate} />
+						{this.state.showDate ?<Input id="date" name="date" type="date" onChange={this.handleDateChange}/> :
+						null}
+					</Col>
+				</FormGroup>
+					<Button onClick={() => this.update(id)} block color="info">Update</Button>
+					<Button onClick={() => this.deleteEntry(id)} block color="danger">Delete</Button>
 			</div>
 		)
 
@@ -58,8 +68,18 @@ export default class UpdatePage extends Component {
 		}
 	}
 
+	handleDate(event) {
+		const {showDate} = this.state;
+		this.setState({showDate: !showDate});
+	}
+
+
 	async update(id) {
-		const result = await axios.post(`/api/update/${id}`, {update: {status: this.state.selected}});
+		const update = {
+			status: this.state.selected
+		};
+		if (typeof this.state.date !== 'undefined') update.date = this.state.date;
+		const result = await axios.post(`/api/update/${id}`, {update});
 		const {entries} = this.state;
 		if (result.data.success) {
 			entries[id].status = this.state.selected;
@@ -69,6 +89,10 @@ export default class UpdatePage extends Component {
 
 	handleChange(event) {
 		this.setState({selected: event.target.value});	
+	}
+
+	handleDateChange(event) {
+		this.setState({date: event.target.value});
 	}
 
 	render() {
