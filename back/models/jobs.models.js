@@ -6,7 +6,12 @@ const job = new Schema({
 	name: String,
 	link: String,
 	status: String,
-	date: Date
+	date: {
+		noresponse: Date,
+		responded: Date,
+		interview: Date,
+		rejected: Date
+	}
 });
 
 module.exports = mongoose.model('job', job);
