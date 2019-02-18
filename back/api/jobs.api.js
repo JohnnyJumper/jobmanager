@@ -22,8 +22,7 @@ router.post('/add', (req, res) => {
 	newJob.name = name;
 	newJob.link = link;
 	newJob.status = status;
-	newJob.date[status] = date ? date : new Date();
-
+	newJob.date[status] = date ? new Date(date).toISOString().split('T')[0] : new Date().toISOString().split('T')[0];
 	newJob.save(err => {
 		if (err) return res.json({success: false, err, data: req.body});
 		return res.json({success: true, data: job});
