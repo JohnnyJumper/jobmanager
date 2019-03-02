@@ -3,15 +3,10 @@ const Schema = mongoose.Schema;
 
 
 const job = new Schema({
-	name: String,
-	link: String,
+	title: String,
 	status: String,
-	date: {
-		noresponse: Date,
-		responded: Date,
-		interview: Date,
-		rejected: Date
-	}
-});
+	date: Date,
+	isResponded: Boolean,
+})
 
-module.exports = mongoose.model('job', job);
+module.exports = mongoose.model('jobv2', job);
