@@ -66,6 +66,12 @@ const JobType = new GraphQLObjectType({
 const RootQuery = new GraphQLObjectType({
     name: 'RootQueryType',
     fields: {
+        totalJobs: {
+            type: GraphQLInt,
+            resolve(parent, args) {
+                return Job.count({});
+            }
+        },
         jobs: {
             type: new GraphQLList(JobType),
             resolve(parent, args) {
@@ -77,6 +83,12 @@ const RootQuery = new GraphQLObjectType({
             args: {id: {type: new GraphQLNonNull(GraphQLID)}},
             resolve(parent, args){
                 return Job.findById(args.id);
+            }
+        },
+        totalInterviews: {
+            type: GraphQLInt,
+            resolve(parent, args){
+                return Interview.count({})
             }
         },
         interview: {
@@ -109,7 +121,8 @@ const RootQuery = new GraphQLObjectType({
             resolve(parent, args) {
                 return Interview.find({status: 'on sight'})
             }
-        }
+        },
+
     }
 })
 
