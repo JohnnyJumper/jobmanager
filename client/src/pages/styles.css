@@ -72,16 +72,17 @@
 .update-entry {
 	width: 600px;
 	height: 600px;
-	/* background-color: yellow; */
+	overflow-y: scroll;
 	box-shadow: 0 0 32px rgba(0, 0, 0, 0.5);
 	display: flex;
 	justify-content: center;
 	padding: 20px;
 	margin: 20px;
+	overflow-x: hidden;
 }
 
 .update-name {
-	font-size: 80px;
+	font-size: 60px;
 }
 
 .update-link {
@@ -91,6 +92,12 @@
 
 .update-status-text {
 	font-size: 40px;
+	margin-right: 10px;
+}
+
+.input-fix {
+	margin: 0px !important;
+	margin-top: 26px !important;
 }
 
 .graphs-container {

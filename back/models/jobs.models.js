@@ -7,6 +7,7 @@ const job = new Schema({
 	status: String,
 	date: Date,
 	isResponded: Boolean,
+	companyID: String,
 })
 
 module.exports = mongoose.model('jobv2', job);

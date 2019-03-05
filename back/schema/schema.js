@@ -3,6 +3,7 @@ const _ = require('lodash');
 
 const Job = require('../models/jobs.models');
 const Interview = require('../models/interviews.models');
+const Company = require('../models/compnay.models');
 
 const {
     GraphQLObjectType,
@@ -14,6 +15,23 @@ const {
     GraphQLNonNull,
     GraphQLBoolean,
 } = graphql;
+
+
+const CompanyType = new GraphQLObjectType({
+    name: 'Company',
+    fields: () => ({
+        name: {type: GraphQLString},
+        id: {type: GraphQLID},
+        link: {type: GraphQLString},
+        jobs: {
+            type: new GraphQLList(JobType),
+            resolve(parent, args) {
+                return Job.find({companyID: parent.id});
+            }
+        }
+    })
+})
+
 
 const InterviewType = new GraphQLObjectType({
     name: 'Interview',
@@ -41,6 +59,13 @@ const JobType = new GraphQLObjectType({
         date: {type: GraphQLString},
         isResponded: {type: GraphQLBoolean},
         link: {type: GraphQLString},
+        companyID: {type: GraphQLID},
+        company: {
+            type: CompanyType,
+            resolve(parent, args) {
+                return Company.findById(parent.companyID);
+            }
+        },
         interviews: {
             type: new GraphQLList(InterviewType),
             resolve(parent, args){
@@ -66,6 +91,19 @@ const JobType = new GraphQLObjectType({
 const RootQuery = new GraphQLObjectType({
     name: 'RootQueryType',
     fields: {
+        company: {
+            type: CompanyType,
+            args: {id: {type: GraphQLID}},
+            resolve(parent, args) {
+                return Company.findById(args.id);
+            }
+        },
+        companies: {
+            type: new GraphQLList(CompanyType),
+            resolve(parent, args) {
+                return Company.find({});
+            }  
+        },
         totalJobs: {
             type: GraphQLInt,
             resolve(parent, args) {
@@ -130,24 +168,39 @@ const RootQuery = new GraphQLObjectType({
 const Mutation = new GraphQLObjectType({
     name: 'Mutation',
     fields: {
+        addCompany: {
+            type: CompanyType,
+            args: {
+                name: {type: GraphQLString},
+                link: {type: GraphQLString}
+            },
+            resolve(parent, args) {
+                const {name, link} = args;
+                let company = new Company({name, link});
+                return company.save();
+            }
+        },
         addJob: {
             type: JobType,
             args: {
                 title: {type: new GraphQLNonNull(GraphQLString)},
                 status: {type: new GraphQLNonNull(GraphQLString)},
                 date: {type: new GraphQLNonNull(GraphQLString)},
-                isResponded: {type: GraphQLBoolean}
+                isResponded: {type: GraphQLBoolean},
+                companyName: {type: GraphQLString}
             },
-            resolve(parent, args){
-                const {title, status, date} = args;
+            async resolve(parent, args){
+                const {title, status, date, companyName} = args;
                 const isResponded = (!args.isResponded) ? false : args.isResponded;
-            
                 let job = new Job();
+                const company = await Company.findOne({name: companyName});
                 job.title = title;
                 job.status = status;
                 job.date = new Date(date);
                 job.isResponded = isResponded;
-                return job.save();
+                job.companyID = company.id;
+                return job.save();  
+                
             }
         },
         addInterview: {

@@ -32,11 +32,11 @@ export default class UpdatePage extends Component {
 						<option>rejected</option>
 					</Input>
 				</FormGroup>
-				<FormGroup>
+				<FormGroup >
 							<Label className="update-status-text">Not Today</Label>
+								<Input className="input-fix" type="checkbox" name="showDate" value={this.state.showDate} onChange={this.handleDate} />
 					<Col>
-							<Input type="checkbox" name="showDate" value={this.state.showDate} onChange={this.handleDate} />
-						{this.state.showDate ?<Input id="date" name="date" type="date" onChange={this.handleDateChange}/> :
+						{this.state.showDate ? <Input id="date" name="date" type="date" onChange={this.handleDateChange}/> :
 						null}
 					</Col>
 				</FormGroup>
