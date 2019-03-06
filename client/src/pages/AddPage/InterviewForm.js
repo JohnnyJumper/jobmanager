@@ -1,7 +1,10 @@
 import React, { Component } from 'react'
 import {Container, Row, Col, Form, FormGroup, Label, Input, Button} from 'reactstrap';
+import {graphql, compose} from 'react-apollo';
+import {addInterview, getJobFromInterviewForm} from '../../queries/queries';
 
-export default class InterviewForm extends Component {
+
+class InterviewForm extends Component {
 
     constructor() {
         super();
@@ -10,7 +13,8 @@ export default class InterviewForm extends Component {
             type: '',
             status: '',
             date: new Date().toISOString().slice(0,10),
-            jobRef: ''
+			jobTitle: '',
+			companyName: ''
         }
 
         this.onChangeHandler = this.onChangeHandler.bind(this);
@@ -23,15 +27,29 @@ export default class InterviewForm extends Component {
         });
     };
 
-    onSubmitHandler(e) {
+    async onSubmitHandler(e) {
         e.preventDefault();
-        console.log('ready to send this data: ', this.state);
+		const job = await this.props.getJobFromInterviewForm.refetch({
+				title: this.state.jobTitle,
+				companyName: this.state.companyName
+		});
+		const jobID = await job.data.job.id;
+		console.log('job ID = ', jobID);
+		const interview = await this.props.addInterviewQuery({
+			variables: {
+				type: this.state.type,
+				status: this.state.status,
+				date: this.state.date,
+				jobID
+			}
+		});
+		console.log('interview = ', interview);
     }
 
     render() {
         return (
 			<Container>
-				<Form>
+				<Form onSubmit={this.onSubmitHandler}>
 					<FormGroup row>
 						<Col xs={12} sm={6} md ={6} lg={6}>
 							<Label for="type">Type</Label>
@@ -67,17 +85,27 @@ export default class InterviewForm extends Component {
 					</FormGroup>
 					<FormGroup row>
 						<Col xs={12} sm={6} md ={6} lg={6}>
-							<Label for="jobname">Job name</Label>
+							<Label for="jobtitle">Job title</Label>
 						</Col>
 						<Col xs={12} sm={6} md ={6} lg={6}>
 							<Input
-                                id="jobname" name="jobRef"
-                                value={this.state.jobRef} onChange={this.onChangeHandler}/>
+                                id="jobtitle" name="jobTitle"
+                                value={this.state.jobTitle} onChange={this.onChangeHandler}/>
+						</Col>
+					</FormGroup>
+					<FormGroup row>
+						<Col xs={12} sm={6} md ={6} lg={6}>
+							<Label for="companyName">Company name</Label>
+						</Col>
+						<Col xs={12} sm={6} md ={6} lg={6}>
+							<Input
+                                id="companyName" name="companyName"
+                                value={this.state.companyName} onChange={this.onChangeHandler}/>
 						</Col>
 					</FormGroup>
 					<Row>
 						<Col xs={12} sm={{size: 3, offset: 10}} md={{size: 2, offset: 10}} lg={{size: 2, offset: 10}}>
-							<Button onClick={this.onSubmitHandler} id="button-submit" block>Submit</Button>
+							<Button id="button-submit" block>Submit</Button>
 						</Col>
 					</Row>
 				</Form>
@@ -85,3 +113,8 @@ export default class InterviewForm extends Component {
 		);
   }
 }
+
+export default compose(
+	graphql(addInterview, {name: 'addInterviewQuery'}),
+	graphql(getJobFromInterviewForm, {name:'getJobFromInterviewForm'})
+)(InterviewForm)

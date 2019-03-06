@@ -13,6 +13,13 @@ html, body, #root {
     text-align: right;
 }
 
+.centered-title {
+    display: flex;
+    justify-content: center;
+    font-size: 3em;
+    margin-bottom: 5px;
+}
+
 body {
     background-color: #2F4858;
     color: #BDD5EA;

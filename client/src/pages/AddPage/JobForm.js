@@ -1,13 +1,17 @@
 import React, { Component } from 'react'
 import {Container, Row, Col, Form, FormGroup, Label, Input, Button} from 'reactstrap';
 
-export default class JobForm extends Component {
+import {graphql, compose} from 'react-apollo';
+import {addCompany, addJob, getCompanyFromJobForm} from '../../queries/queries';
+
+class JobForm extends Component {
 
     constructor() {
         super();
 
         this.state = {
-            companyName: '',
+			companyName: '',
+			link: '',
             title: '',
             date: new Date().toISOString().slice(0, 10),
             responded: false,
@@ -23,15 +27,46 @@ export default class JobForm extends Component {
         });
     };
 
-    onSubmitHandler(e) {
+ async onSubmitHandler(e) {
         e.preventDefault();
-        console.log('ready to send this data: ', this.state);
+		const companyQuery = await this.props.getCompanyFromJobForm.refetch({
+				companyName: this.state.companyName
+		});
+		const companyExist = await companyQuery.data.company;
+		let companyID;
+		if (!companyExist) {
+			let addedCompany = await this.props.addCompanyQuery({
+				variables: {
+					name: this.state.companyName,
+					link: this.state.link
+				}
+			});
+			companyID = await addedCompany.data.addCompany.id;
+		} else {
+			companyID = await companyQuery.data.company.id;
+		}
+			const job = await this.props.addJobQuery({
+				variables: {
+					title: this.state.title,
+					date: this.state.date,
+					responded: this.state.responded,
+					companyID
+				}
+		});
+		this.setState({
+			companyName: '',
+			link: '',
+            title: '',
+            date: new Date().toISOString().slice(0, 10),
+            responded: false,
+		})
+	
     }
 
     render() {
         return (
     		<Container>
-    			<Form>
+    			<Form onSubmit={this.onSubmitHandler}>
     				<FormGroup row>
     					<Col xs={12} sm={6} md={6} lg={6}>
     						<Label for="companyName">Company name</Label>
@@ -40,6 +75,17 @@ export default class JobForm extends Component {
                             <Input 
                                 id="companyName" name="companyName"
                                 value={this.state.companyName} onChange={this.onChangeHandler}
+                            />
+    					</Col>
+        				</FormGroup>
+    				<FormGroup row>
+    					<Col xs={12} sm={6} md={6} lg={6}>
+    						<Label for="link">Company link</Label>
+    					</Col>
+    					<Col xs={12} sm={6} md={6} lg={6}>
+                            <Input 
+                                id="link" name="link"
+                                value={this.state.link} onChange={this.onChangeHandler}
                             />
     					</Col>
         				</FormGroup>
@@ -80,7 +126,7 @@ export default class JobForm extends Component {
     				</FormGroup>
         				<Row>
     					<Col xs={12} sm={{size: 3, offset: 10}} md={{size: 2, offset: 10}} lg={{size: 2, offset: 10}}>
-    						<Button onClick={this.onSubmitHandler} id="button-submit" block>Submit</Button>
+    						<Button id="button-submit" block>Submit</Button>
     					</Col>
     				</Row>
     			</Form>
@@ -88,3 +134,11 @@ export default class JobForm extends Component {
         )
     }
 }
+
+export default compose(
+	graphql(addCompany, {name: 'addCompanyQuery'}),
+	graphql(addJob, {name: 'addJobQuery'}),
+	graphql(getCompanyFromJobForm, {
+		name: 'getCompanyFromJobForm',
+	})
+)(JobForm)
