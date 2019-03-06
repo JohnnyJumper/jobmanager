@@ -131,6 +131,24 @@ const RootQueryType = new GraphQLObjectType({
                 const {companyName} = args;
                 return Company.findOne({name: companyName});
             }
+        },
+        appliedJobs: {
+            type: GraphQLInt,
+            resolve(parent, args) {
+                return Job.countDocuments({});
+            }
+        },
+        appliedCompanies: {
+            type: GraphQLInt,
+            resolve(parent, args) {
+                return Company.countDocuments({});
+            }
+        },
+        interviewRequests: {
+            type: GraphQLInt,
+            resolve(parent, args) {
+                return Interview.countDocuments({});
+            }
         }
     }
 })

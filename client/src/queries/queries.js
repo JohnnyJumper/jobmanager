@@ -105,3 +105,20 @@ export const getInterviews = gpl`
   	}
 }
 `;
+
+export const getPieChartData = gpl`
+  query {
+    appliedJobs
+    appliedCompanies
+    interviewRequests
+  }
+`;
+
+export const getLineChartData = gpl`
+  query {
+    appliedJobs,
+    jobs {
+      date
+    }
+  }
+`;

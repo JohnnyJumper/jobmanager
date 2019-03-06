@@ -5,6 +5,7 @@ import App from './App';
 
 
 import './styles.css';
+import '../node_modules/react-vis/dist/style.css';
 
 
 

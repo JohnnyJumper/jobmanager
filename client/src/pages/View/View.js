@@ -5,7 +5,16 @@ import { Query } from 'react-apollo';
 import {getCompanies, getJobs, getInterviews} from '../../queries/queries';
 
 const Mark = ({responded}) => (
-    responded ? 'OK' : 'NOT'
+    responded ? (<svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52"><circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/><path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/></svg>) : 'NOT'
+)
+
+export const Loading = () => (
+    <div className="parrentSpinner">
+        <div className="spinner">
+            <div className="double-bounce1"></div>
+            <div className="double-bounce2"></div>
+        </div>
+    </div>
 )
 
 class View extends Component {
@@ -27,7 +36,7 @@ class View extends Component {
     renderJobs(data) {
         console.log('data!', data);
         return data.data.jobs.map(job => <li className="view-li" key={job.id}>
-               <span> {job.title} at {job.company.name} <Mark responded={job.responded}/> </span>
+               <span> {job.title} at {job.company.name}</span> <Mark responded={job.responded}/>
                 </li>);
     }
 
@@ -46,7 +55,7 @@ class View extends Component {
     renderView(props) {
             const {match: {params: {category: category}}} = this.props;
             if (props.loading)
-                return <div>Loading data...</div>
+                return <Loading />
             switch(category) {
                 case 'jobs':
                     return this.renderJobs(props);
@@ -60,7 +69,7 @@ class View extends Component {
     render() {
         const {match: {params: {category: category} }} = this.props;
         return (
-            <Container>
+            <Container className="view-parrent">
                 <ol className="view-ul">
                     <Query query={this.queries[category]}>
                         {this.renderView}

@@ -68,7 +68,7 @@ const RouteComponent = () => (
 					<DeveloperLinks />
 				</Col>
 			</Row>
-			<Row>
+			<Row className="parrentView">
 				<Col>
 					<Switch>
 						<Route exact path="/" component={AddPage} />
