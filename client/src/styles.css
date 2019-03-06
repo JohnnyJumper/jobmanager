@@ -1,4 +1,13 @@
 
+body {
+    overflow: hidden;
+}
+
+#root {
+    overflow-y: scroll;
+    padding-right: 17px;
+    box-sizing: content-box;
+}
 
 html, body, #root {
     height: 100%;
@@ -35,13 +44,14 @@ body {
 .devbar-link, a {
     margin: 0 20px;
     color: #F6AE2D;
-    font-size: 2em;
+    font-size: 32px;
     text-decoration: initial;
     transition: color 0.4s;
     background-color: initial !important;
     border: 0;
     box-shadow: initial !important;
     outline: none !important;
+    padding: 0px;
 }
 
 .devbar-link :hover, .devbar-link :active, .devbar-link :focus {

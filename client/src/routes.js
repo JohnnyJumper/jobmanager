@@ -32,21 +32,29 @@ class DeveloperLinks extends React.Component {
 
  render(){
 	return (
-        <div className="devbar">
-			<span className="devbar-link"><Link to="/">AddPage</Link></span>
-			<Dropdown isOpen={this.state.dropdownOpen} toggle={this.toggle}>
-					<DropdownToggle caret className="devbar-link">
-						<span className="devbar-link">Details</span>
-					</DropdownToggle>				
-					<DropdownMenu className="devbar-dropdown">
-							<DropdownItem header>Basics</DropdownItem>
-							<DropdownItem><Link to="/view/jobs">jobs</Link></DropdownItem>
-							<DropdownItem><Link to="/view/interviews">interviews</Link></DropdownItem>
-							<DropdownItem><Link to="/view/companies">companies</Link></DropdownItem>
-					</DropdownMenu>
-			</Dropdown>
-			<span className="devbar-link"><Link to="/stats">StatPage</Link></span>
-        </div>
+			<Container className="devbar">
+				<Row>
+					<Col xs={12} sm={7} md={4} lg={4}>
+						<span className="devbar-link"><Link to="/">AddPage</Link></span>
+					</Col>
+					<Col xs={12} sm={7} md={4} lg={4}>
+						<Dropdown isOpen={this.state.dropdownOpen} toggle={this.toggle}>
+							<DropdownToggle caret className="devbar-link">
+								<span className="devbar-link">Details</span>
+							</DropdownToggle>				
+							<DropdownMenu className="devbar-dropdown">
+									<DropdownItem header>Basics</DropdownItem>
+									<DropdownItem><Link to="/view/jobs">jobs</Link></DropdownItem>
+									<DropdownItem><Link to="/view/interviews">interviews</Link></DropdownItem>
+									<DropdownItem><Link to="/view/companies">companies</Link></DropdownItem>
+							</DropdownMenu>
+							</Dropdown>
+					</Col>
+					<Col xs={12} sm={7} md={4} lg={4}>
+							<span className="devbar-link"><Link to="/stats">StatPage</Link></span>
+					</Col>
+				</Row>
+			</Container>
 		);
 	}
 }
