@@ -23,6 +23,12 @@ const CompanyType = new GraphQLObjectType({
         name: {type: GraphQLString},
         link: {type: GraphQLString},
         id: {type: GraphQLID},
+        applied: {
+            type: GraphQLInt,
+            resolve(parent, args) {
+                return Job.countDocuments({companyID: parent.id});
+            } 
+        },
         jobs: {
             type: new GraphQLList(JobType),
             resolve(parent, args) {

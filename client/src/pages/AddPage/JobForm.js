@@ -27,7 +27,7 @@ class JobForm extends Component {
         });
     };
 
- async onSubmitHandler(e) {
+	async onSubmitHandler(e) {
         e.preventDefault();
 		const companyQuery = await this.props.getCompanyFromJobForm.refetch({
 				companyName: this.state.companyName

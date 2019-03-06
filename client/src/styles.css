@@ -38,14 +38,21 @@ body {
     font-size: 2em;
     text-decoration: initial;
     transition: color 0.4s;
+    background-color: initial !important;
+    border: 0;
+    box-shadow: initial !important;
+    outline: none !important;
 }
 
-.devbar-link a:hover {
+.devbar-link :hover, .devbar-link :active, .devbar-link :focus {
     color: #BDD5EA;
     text-decoration: initial;
+    box-shadow: initial !important;
 }
 
-
+.devbar-dropdown {
+    background-color: whitesmoke; 
+}
 
 .addpage {
     height: 100%;
@@ -61,4 +68,19 @@ body {
 }
 .addentry {
     margin: 15px;
+}
+
+
+.view-ul {
+    background-color: #33658A;
+    font-size: 24px;
+}
+
+.view-ul li span {
+    padding: 20px;
+    border-left: 1px solid #BDD5EA;
+}
+
+.view-li {
+    padding: 17px;
 }

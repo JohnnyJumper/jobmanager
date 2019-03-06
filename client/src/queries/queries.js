@@ -62,3 +62,46 @@ export const getCompanyFromJobForm = gpl`
   }
 }
 `;
+
+
+export const getCompanies = gpl`
+	query{
+		companies{
+			name
+      link
+      applied
+			id
+		}
+	}
+`;
+
+export const getJobs = gpl`
+	query {
+		jobs {
+    		title
+    		responded
+    		date
+    		id
+    		company {
+    			name
+    	}
+  	}
+}
+`;
+
+export const getInterviews = gpl`
+	query {
+  		interviews {
+    	type
+    	status
+      date
+      id
+    	job {
+      		title
+      		company {
+		        name
+		    }
+    	}
+  	}
+}
+`;
