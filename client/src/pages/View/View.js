@@ -33,6 +33,8 @@ class View extends Component {
             };
     }
 
+
+	
     renderJobs(data) {
         console.log('data!', data);
         return data.data.jobs.map(job => <li className="view-li" key={job.id}>
