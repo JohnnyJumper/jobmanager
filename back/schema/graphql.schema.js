@@ -1,5 +1,7 @@
 const  graphql = require('graphql');
 
+const mongoose = require('mongoose');
+
 const Company = require('./models/company.models');
 const Job = require('./models/jobs.models');
 const Interview = require('./models/interview.models');
@@ -23,8 +25,17 @@ const CompanyType = new GraphQLObjectType({
         id: {type: GraphQLID},
         jobs: {
             type: new GraphQLList(JobType),
-            resolve(parent, arg) {
+            resolve(parent, args) {
                 return Job.find({companyID: parent.id});
+            }
+        },
+        interviews: {
+            type: new GraphQLList(InterviewType),
+            async resolve(parent, args) {
+                const jobs = await Job.find({companyID: parent.id});
+                const jobIDS = await jobs.map(job => mongoose.Types.ObjectId(job.id));
+                console.log('Job ID = ', jobIDS);
+                return Interview.find({jobID: {$in: jobIDS}});
             }
         }
     })
