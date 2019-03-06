@@ -42,7 +42,9 @@ body {
 
 .devbar-link a:hover {
     color: #BDD5EA;
+    text-decoration: initial;
 }
+
 
 
 .addpage {
