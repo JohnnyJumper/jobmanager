@@ -1,0 +1,55 @@
+
+
+html, body, #root {
+    height: 100%;
+    width: 100%;
+}
+
+html, body, #root {
+    font-family: 'Arbutus Slab', serif !important;
+}
+
+.right {
+    text-align: right;
+}
+
+body {
+    background-color: #2F4858;
+    color: #BDD5EA;
+    height: 100%;
+}
+
+.devbar {
+    margin: 0;
+    display: flex;
+    justify-content: center;
+}
+
+.devbar-link, a {
+    margin: 0 20px;
+    color: #F6AE2D;
+    font-size: 2em;
+    text-decoration: initial;
+    transition: color 0.4s;
+}
+
+.devbar-link a:hover {
+    color: #BDD5EA;
+}
+
+
+.addpage {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.addpage #button-submit {
+    background-color: #33658A;
+    border-color: #2c6591;
+}
+.addentry {
+    margin: 15px;
+}

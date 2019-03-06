@@ -2,11 +2,28 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
-import * as serviceWorker from './serviceWorker';
+
+
+import './styles.css';
+
+
+// import ApolloClient from 'apollo-boost';
+// import gpl from 'graphql-tag';
+
+// const client = new ApolloClient({
+//     uri: 'http://localhost:6357/graphql'
+// })
+
+// client.query({
+//     query: gpl`
+//         {
+//             companies {
+//                 id
+//                 name
+//             }
+//         }
+//       `
+// }).then(result => console.log(result));
+
 
 ReactDOM.render(<App />, document.getElementById('root'));
-
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: http://bit.ly/CRA-PWA
-serviceWorker.unregister();
