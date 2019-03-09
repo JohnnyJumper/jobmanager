@@ -1,113 +1,118 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 
-import {XYPlot, HorizontalGridLines, VerticalGridLines, XAxis, YAxis, LineMarkSeries, VerticalBarSeries, AreaSeries} from 'react-vis';
-import axios from 'axios';
+import {Container, Row, Col} from 'reactstrap';
+import {RadialChart, XYPlot, VerticalGridLines, HorizontalGridLines, XAxis, YAxis,LineMarkSeries} from 'react-vis';
 
+import {Loading} from './View/View';
 
-
-export default class StatPage extends Component {
-
-	constructor() {
-		super();
-		this.state = {
-			projects: {},
-			formated: {},
-			graphData: {},
-		}
-
-		this.plot = (props) => (
-			<XYPlot
-				xType="time"
-				width={1000}
-				height={300}>
-				<VerticalGridLines />
-				<HorizontalGridLines />
-				<XAxis title="Date"/>
-				<YAxis title={props.status} />
-				<LineMarkSeries
-				curve={'curveMonotoneX'}
-				colorType="literal"
-				color={this.chooseColor(props.status)}
-				data={props.data}/>
-				<AreaSeries
-				// barWidth={0.1}
-				curve={'curveMonotoneX'}
-				colorType="literal"
-				color={this.chooseColor(props.status)}
-				data={props.data}/>	
-			</XYPlot>	
-		)
-	}
+import {graphql, compose} from 'react-apollo';
+import {getPieChartData, getLineChartData} from '../queries/queries';
 
 
-	async componentDidMount() {
-		const projects = await axios.get('/api/projects');
-		const formated = {};
-		if (projects.data.success) {
-			projects.data.data.map(project => {
-				for (const status in project.date) {
-					if (project.date.hasOwnProperty(status)) {
-						const element = project.date[status];
-						if (!formated.hasOwnProperty(element))
-							formated[element] = {[status]: 1}
-						else if (!formated[element].hasOwnProperty(status))
-							formated[element] = {...formated[element], [status]: 1}
-						else
-							formated[element] = {...formated[element], [status]: formated[element][status] + 1}
-					}
-				}
-				return true;
-			});
-			this.setState({projects: formated}, this.renderGraph);
-		};
-	}
+const Plot = (props) => (
+	<XYPlot
+		xType="time"
+		width={1000}
+		height={300}
+		className="graph-bg"
+	>
+		<VerticalGridLines />
+		<HorizontalGridLines />
+		<XAxis title="Date"/>
+		<YAxis title={props.status} />
+		<LineMarkSeries
+		curve={'curveMonotoneX'}
+		data={props.data}/>
+	</XYPlot>
+)
 
-	chooseColor(status) {
-		switch(status) {
-			case 'responded': 
-				return 'green';
-			case 'rejected':
-				return 'red';
-			default:
-				return undefined;
-		}
-	}
 
-	renderGraph() {
-		const {graphData} = this.state;
-		const statuses = ['responded', 'noresponse' , 'interview', 'rejected'];
-		statuses.forEach(status => {
-			graphData[status] = this.getGraphData(status)
+class StatPage extends Component {
+
+
+	renderLineGraph() {
+		const {getLineChartDataQuery} = this.props;
+		if (getLineChartDataQuery.loading) return <Loading />
+		const {jobs} = getLineChartDataQuery;
+		
+		const applieddata = jobs.reduce((acc, item, index) => {
+			if (index === 1) {
+				acc = {[acc.date]:1}
+			}
+			if (!Object.prototype.hasOwnProperty.call(acc, item.date))
+				acc = {...acc, [item.date]: 1}
+			else
+				acc[item.date] += 1;
+			return acc;
 		});
-		console.log('this is final graphData ', graphData);
-		this.setState({graphData}, () => console.log('gathered'));
-	}
-
-	getGraphData(status) {
-		const {projects} = this.state;
-		const data = [];
-		console.log('projects  = ',projects);
-		for (const date in projects) {
-			console.log('date = ', date, 'projects[date] = ', projects[date]);
-			if (projects[date].hasOwnProperty(status))
-				data.push({x: new Date(date).getTime(), y: projects[date][status]});
-		}
-		console.log('data = ', data);
-		data.sort((obj1, obj2) => obj1.x - obj2.x);
-		console.log('data after soert = ', Object.assign({}, {data}));
-		return data;
+		
+		const dates = Object.keys(applieddata);
+		const graphData = dates.map(date => ({
+			x: new Date(date).getTime(),
+			y: applieddata[date]
+		}));
+		return <Plot status="applied" data={graphData} />		
 	}
 
 
-	render() {
-		const {graphData} = this.state;
-		const graphKeys = Object.keys(graphData);
-		return(
-			<div className="page-container">
-				<div className="graphs-container vertical">
-					{graphKeys.map((key, index) => <this.plot status={key} data={graphData[key]} key={index}/>)}
-				</div>
-			</div>
+	renderPieChart() {
+		const {getPieChartDataQuery} = this.props;
+		if (getPieChartDataQuery.loading) {
+			return <Loading />
+		} 
+		const {appliedJobs, appliedCompanies, interviewRequests} = getPieChartDataQuery;
+		const dataArr = [
+			{appliedJobs, name: 'appliedJobs'},
+			{appliedCompanies, name: 'appliedCompanies'},
+			{interviewRequests, name: 'interviewRequests'}
+		];
+		const total = dataArr.reduce((sum, item, index) => 
+			{
+				if (index == 1)
+					sum = sum[sum.name];
+				sum += item[item.name];
+				return sum;
+			}
 		);
+		const graphData = dataArr.map(chapter => ({
+			angle: chapter[chapter.name] / total,
+			radius: 1,
+			label: chapter.name
+		}));
+		return (
+			<RadialChart
+				data={graphData}
+				width={800}
+				height={800}
+				showLabels={true}
+				labelsRadiusMultiplier={0.9}
+				className="chart"
+			/>
+			)	
+	}	
+
+	  render() {
+	 	return(
+			<Container>
+				<Row className="section">
+						<span>Piechart</span>
+					<Col>
+						{this.renderPieChart()}
+					</Col>
+				</Row>
+				<Row className="section">
+						<span>Line Graph</span>
+					<Col>
+							{this.renderLineGraph()}
+					</Col>
+				</Row>
+			</Container>
+			
+	 	 );
 	}
 }
+
+export default compose(
+	graphql(getPieChartData, {name: "getPieChartDataQuery"}),
+	graphql(getLineChartData, {name: "getLineChartDataQuery"})
+)(StatPage)

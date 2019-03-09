@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const errors = require('./errors');
-const job = require('../models/jobs.models');
+const job = require('../schema/models/jobs.models');
 
 
 router.get('/projects', (req, res) => {
