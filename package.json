@@ -1,6 +1,12 @@
 {
-  "dependencies": {
-    "cors": "^2.8.5",
-    "react-apollo": "^2.5.2"
+  "name": "jobmanager",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/JohnnyJumper/jobmanager.git",
+  "license": "MIT",
+  "scripts": {
+    "launchBack": "cd back && yarn start",
+    "launchFront": "cd client && yarn start",
+    "run":  "concurrently \"yarn launchBack \" \"yarn launchFront\""
   }
 }
