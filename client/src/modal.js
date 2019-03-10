@@ -16,7 +16,6 @@ export default class Modal extends Component {
 
 	componentDidUpdate(prevProps, prevState) {
 		if (prevProps.control != this.props.control) {
-			console.log({prevProps, prevState});
 			return this.setState({control: this.props.control});
 		}
 	}
